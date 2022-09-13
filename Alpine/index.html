@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Alpine.js</title>
+    <script src="https://unpkg.com/alpinejs" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js" integrity="sha512-odNmoc1XJy5x1TMVMdC7EMs3IVdItLPlCeL5vSUPN2llYKMJ2eByTTAIiiuqLg+GdNr9hF6z81p27DArRFKT7A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        [x-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container mx-auto mt-6 max-w-sm">
+    <h1 class="text-5xl mb-4">Alpine.js</h1>
+    <!-- x-data alpine component -->
+    <div x-data="{
+    open: false,
+    name: 'Mike',
+    search: '',
+    posts: [
+    {title: 'post one'},
+    {title: 'post two'},
+    {title: 'post three'}
+    ],
+
+    }"
+    >
+        <!-- x-on & x-bind -->
+        <button @click="open = !open"
+                :class="open ? 'bg-blue-800' : 'bg-slate-700'"
+                class="text-white px-4 py-2 rounded-xl">
+            Toggle
+        </button>
+        <!-- x-show -->
+        <div x-show="open" x-transition x-cloak>
+            <p class="bg-gray-200 p-4 my-6 rounded">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto, fuga.
+            </p>
+        </div>
+        <!-- text -->
+        <div class="my-4">
+            the value of name is <span x-text="name" class="font-bold"></span>
+        </div>
+        <!-- x-effect -->
+        <div x-effect="console.log(open)"></div>
+        <!-- x-model -->
+        <input x-model="search"
+               type="text"
+               class="border p-2 w-full mb-2 mt-6"
+               placeholder="Search">
+        <p>
+            <span class="font-bold">Searching for:</span>
+            <span x-text="search"></span>
+        </p>
+        <!-- x-if -->
+        <template x-if="open">
+            <div class="bg-red-600 text-white p-2 mt-8">Template base ond condition</div>
+        </template>
+        <!--x- for -->
+        <h3 class="text-2xl mt-6 mb-3 font -bold">Posts</h3>
+        <template x-for="post in posts">
+            <div x-text="post.title" class=""></div>
+        </template>
+        <button @click="posts.push({title: 'New post'})"
+                class="bg-blue-800 text-white px-4 py-2 rounded-lg mt-4" >Add Post
+        </button>
+        <!-- x-ref -->
+        <div class="my-6">
+            <div x-ref="text">Bye world</div>
+            <button @click="$refs.text.innerText = 'Hello boy'" class="bg-black text-white p-2 rounded-lg">Click</button>
+        </div>
+        <!-- x-html -->
+        <div class="text-2xl" x-html="(await axios.get('./partial.html')).data"></div>
+        <!-- $el -->
+        <button @click="$el.innerHTML = 'Hello world'" class="mt-4 p-4 border">Replace text</button>
+<!-- x-init and $watch-->
+        <div x-init="$watch('posts', value => console.log(value))"></div>
+        <!-- $dispatch -->
+        <div @notify="alert('You have been notified')">
+            <button @click="$dispatch('notify')" class="bg-green-700 text-white p-2 mt-4 rounded-lg">Notify</button>
+        </div>
+
+        <!-- $data -->
+        <button @click="getLatestPost($data.posts)" class="bg-orange-800 text-white mt-6 p-2 rounded-lg">Get Latest post</button>
+    </div>
+</div>
+
+<footer x-data class="text-center mt-10">
+    <div x-text="name"></div>
+    <p>Copyright &copy; <span x-text="new Date().getFullYear()"></span></p>
+</footer>
+
+<script>
+    function getLatestPost(posts){
+        console.log(posts.slice(-1).pop())
+    }
+</script>
+</body>
+</html>
